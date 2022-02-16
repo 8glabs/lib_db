@@ -1,1 +1,1 @@
-# lib_db
+# lib-db
