@@ -3,6 +3,8 @@ package lib_db
 import (
 	"fmt"
 	"log"
+
+	"github.com/google/uuid"
 )
 
 // func GetUserById(userId uint64, db *sql.DB) (*models.User, error) {
@@ -62,7 +64,7 @@ func (repo *Repository) UpdateUser(data interface{}) error {
 }
 
 //*[]models.User
-func (repo *Repository) GetCreatedNftCollectionSupporters(creatorId uint64, idArray uint64, data interface{}) error {
+func (repo *Repository) GetCreatedNftCollectionSupporters(creatorId uint64, idArray []uuid.UUID, data interface{}) error {
 	// var nfts []models.Nft
 	// if err := repo.DB.Where("creator_id = ?", creatorId).Find(&nfts).Error; err != nil {
 	// 	return err
