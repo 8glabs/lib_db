@@ -86,7 +86,7 @@ func (repo *Repository) GetCreatedNftCollectionSupporters(creatorId uint64) (*[]
 	var owners []models.User
 	err := repo.DB.Joins(
 		"JOIN nfts on nfts.owner_id=users.id").Where(
-		"nfts.creator_id in (?)", creatorId).Not("users.id = ?", creatorId).Group("users.id").Find(
+		"nfts.creator_id in (?)", idArray).Not("users.id = ?", creatorId).Group("users.id").Find(
 		&owners).Error
 
 	if err != nil {
