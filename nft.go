@@ -6,13 +6,13 @@ import (
 	_ "github.com/lib/pq"
 )
 
-func (repo *Repository) GetNftById(nftId uuid.UUID) (*models.Nft, error) {
-	var nft models.Nft
-	err := repo.DB.Preload("Creator").Preload("Owner").Where("id = ?", nftId).First(&nft).Error
+//*models.Nft
+func (repo *Repository) GetNftById(nftId uuid.UUID, data interface{}) error {
+	err := repo.DB.Preload("Creator").Preload("Owner").Where("id = ?", nftId).First(data).Error
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return &nft, nil
+	return nil
 }
 
 // func GetNftById(nftId uuid.UUID, db *sql.DB) (*models.Nft, error) {
@@ -36,13 +36,13 @@ func (repo *Repository) GetNftById(nftId uuid.UUID) (*models.Nft, error) {
 // 	return &nft, err
 // }
 
-func (repo *Repository) GetNftByTxnId(txnId uuid.UUID) (*models.Nft, error) {
-	var nft models.Nft
-	err := repo.DB.Preload("NftCollection").Where("txn_id = ?", txnId).Find(&nft).Error
+//*models.Nft
+func (repo *Repository) GetNftByTxnId(txnId uuid.UUID, data interface{}) error {
+	err := repo.DB.Preload("NftCollection").Where("txn_id = ?", txnId).Find(data).Error
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return &nft, nil
+	return nil
 }
 
 // func GetNftByTxnId(txnId uuid.UUID, db *sql.DB) (*models.Nft, error) {
@@ -64,22 +64,22 @@ func (repo *Repository) GetNftByTxnId(txnId uuid.UUID) (*models.Nft, error) {
 // 	return &nft, err
 // }
 
-func (repo *Repository) GetNftBySerialId(serialId int, nftCollectionId uuid.UUID) (*models.Nft, error) {
-	var nft models.Nft
-	err := repo.DB.Where("serial_id = ?", serialId).Where("nft_collection_id = ?", nftCollectionId).First(&nft).Error
+//*models.Nft
+func (repo *Repository) GetNftBySerialId(serialId int, nftCollectionId uuid.UUID, data interface{}) error {
+	err := repo.DB.Where("serial_id = ?", serialId).Where("nft_collection_id = ?", nftCollectionId).First(data).Error
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return &nft, err
+	return err
 }
 
-func (repo *Repository) UpdateNft(nft *models.Nft) error {
+func (repo *Repository) UpdateNft(nft interface{}) error {
 	// err := repo.DB.Session(&gorm.Session{FullSaveAssociations: false}).Updates(&nft).Error
 
 	// For some reason, if following the doc and do
 	// repo.DB.Omit("NftCollection").Omit("Owner").Updates(&nft).Error
 	// doesn't work. NftCollection and Owner will still be inserted
-	err := repo.DB.Omit("NftCollection", "Owner").Updates(&nft).Error
+	err := repo.DB.Omit("NftCollection", "Owner").Updates(nft).Error
 	if err != nil {
 		return err
 	}
@@ -126,23 +126,23 @@ func (repo *Repository) UpdateNft(nft *models.Nft) error {
 // 	return err
 // }
 
-func (repo *Repository) GetOwnedNfts(userId uint64) (*[]models.Nft, error) {
-	var nfts []models.Nft
+//*[]models.Nft
+func (repo *Repository) GetOwnedNfts(userId uint64, data interface{}) error {
 	err := repo.DB.Preload(
-		"Creator").Preload("Owner").Where("owner_id = ?", userId).Find(&nfts).Error
+		"Creator").Preload("Owner").Where("owner_id = ?", userId).Find(data).Error
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return &nfts, nil
+	return nil
 }
 
-func (repo *Repository) GetOnsaleNftsOfCollection(nftCollectionId uuid.UUID) (*[]models.Nft, error) {
-	var nfts []models.Nft
+//*[]models.Nft
+func (repo *Repository) GetOnsaleNftsOfCollection(nftCollectionId uuid.UUID, data interface{}) error {
 	err := repo.DB.Preload("NftCollection").Preload("Owner").Where(
 		"nft_collection_id = ?", nftCollectionId).Where(
-		"txn_status = ?", models.TXN_STATUS_LISTED).Find(&nfts).Error
+		"txn_status = ?", models.TXN_STATUS_LISTED).Find(data).Error
 	if err != nil {
-		return nil, nil
+		return nil
 	}
-	return &nfts, nil
+	return nil
 }
