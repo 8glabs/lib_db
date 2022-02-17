@@ -21,7 +21,7 @@ func (repo *Repository) GetNftCollection(nftCollectionId uuid.UUID, data interfa
 }
 
 //*[]models.NftCollection
-func (repo *Repository) GetCreatedDrops(userId uint64, from int, to int, idArray []uuid.UUID, data interface{}) error {
+func (repo *Repository) GetCreatedDrops(userId uint64, from int, to int, idArray []uint64, data interface{}) error {
 
 	if err := repo.DB.Preload("Nfts").Preload("Nfts.Creator").Where(
 		"id in (?)", idArray).Where(
@@ -33,7 +33,7 @@ func (repo *Repository) GetCreatedDrops(userId uint64, from int, to int, idArray
 }
 
 //*[]models.NftCollection,
-func (repo *Repository) GetCreatedMoments(userId uint64, from int, to int, idArray []uuid.UUID, data interface{}) error {
+func (repo *Repository) GetCreatedMoments(userId uint64, from int, to int, idArray []uint64, data interface{}) error {
 
 	if err := repo.DB.Preload("Nfts").Preload("Nfts.Creator").Where(
 		"id in (?)", idArray).Where(
@@ -45,7 +45,7 @@ func (repo *Repository) GetCreatedMoments(userId uint64, from int, to int, idArr
 }
 
 //*[]models.NftCollection,
-func (repo *Repository) GetCreatedNftCollections(userId uint64, from int, to int, idArray []uuid.UUID, data interface{}) error {
+func (repo *Repository) GetCreatedNftCollections(userId uint64, from int, to int, idArray []uint64, data interface{}) error {
 	if err := repo.DB.Preload("Nfts").Preload("Nfts.Creator").Where(
 		"id in (?)", idArray).Offset(from).Limit(to).Find(
 		&data).Error; err != nil {
@@ -57,7 +57,7 @@ func (repo *Repository) GetCreatedNftCollections(userId uint64, from int, to int
 
 // *[]map[string]string,
 
-func (repo *Repository) CreatedNftCollectionDigest(userId int64, idArray []uuid.UUID, data interface{}) error {
+func (repo *Repository) CreatedNftCollectionDigest(userId int64, idArray []uint64, data interface{}) error {
 
 	if err := repo.DB.Preload("Nfts").Preload("Nfts.Creator").Where(
 		"id in (?)", idArray).Find(
