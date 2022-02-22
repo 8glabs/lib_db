@@ -3,8 +3,6 @@ package lib_db
 import (
 	"fmt"
 	"log"
-
-	"github.com/google/uuid"
 )
 
 // func GetUserById(userId uint64, db *sql.DB) (*models.User, error) {
@@ -64,7 +62,7 @@ func (repo *Repository) UpdateUser(data interface{}) error {
 }
 
 //*[]models.User
-func (repo *Repository) GetCreatedNftCollectionSupporters(creatorId uint64, idArray []uuid.UUID, data interface{}) error {
+func (repo *Repository) GetCreatedNftCollectionSupporters(creatorId uint64, idArray []uint64, data interface{}) error {
 	// var nfts []models.Nft
 	// if err := repo.DB.Where("creator_id = ?", creatorId).Find(&nfts).Error; err != nil {
 	// 	return err
@@ -77,14 +75,13 @@ func (repo *Repository) GetCreatedNftCollectionSupporters(creatorId uint64, idAr
 	// 	}
 	// }
 
-	// idArray := make([]uuid.UUID, len(idMap))
+	// idArray := []uuid.UUID{}
 	// for k, _ := range idMap {
 	// 	idArray = append(idArray, k)
 	// }
 
-	err := repo.DB.Joins(
-		"JOIN nfts on nfts.owner_id=users.id").Where(
-		"nfts.creator_id in (?)", idArray).Not("users.id = ?", creatorId).Group("users.id").Find(
+	err := repo.DB.Where(
+		"users.id in (?)", idArray).Not("users.id = ?", creatorId).Group("users.id").Find(
 		data).Error
 
 	if err != nil {
