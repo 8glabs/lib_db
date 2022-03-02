@@ -2,64 +2,61 @@ package lib_db
 
 import (
 	"database/sql"
-	"fmt"
 	"log"
 
-	"github.com/8glabs/lib_db/models"
 	"github.com/google/uuid"
 )
 
-func (repo *Repository) CreateGiftingCampaign(campaign models.GiftingCampaign) error {
-	err := repo.DB.Create(&campaign).Error // pass pointer of data to Create
+func (repo *Repository) CreateGiftingCampaign(campaign interface{}) error {
+	err := repo.DB.Create(campaign).Error // pass pointer of data to Create
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (repo *Repository) GetGiftingCampaignByCollectionId(nftCollectionId uuid.UUID) (*models.GiftingCampaign, error) {
-	var giftingCampaign models.GiftingCampaign
-	err := repo.DB.Where("nft_collection_id = ?", nftCollectionId).First(&giftingCampaign).Error
-	if err != nil {
-		return nil, err
-	}
-	return &giftingCampaign, nil
-}
-
-func (repo *Repository) CreatePrimarySaleCampaign(campaign models.PrimarySaleCampaign) error {
-	err := repo.DB.Create(&campaign).Error // pass pointer of data to Create
+func (repo *Repository) GetGiftingCampaignByCollectionId(nftCollectionId uuid.UUID, giftingCampaign interface{}) error {
+	err := repo.DB.Where("nft_collection_id = ?", nftCollectionId).First(giftingCampaign).Error
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (repo *Repository) GetPrimarySaleCampaignByCollectionId(nftCollectionId uuid.UUID) (*models.PrimarySaleCampaign, error) {
-	var primarySaleCampaign models.PrimarySaleCampaign
-	err := repo.DB.Where("nft_collection_id = ?", nftCollectionId).First(&primarySaleCampaign).Error
+func (repo *Repository) CreatePrimarySaleCampaign(campaign interface{}) error {
+	err := repo.DB.Create(campaign).Error // pass pointer of data to Create
 	if err != nil {
-		return nil, err
+		return err
 	}
-	return &primarySaleCampaign, nil
+	return nil
 }
 
-func (repo *Repository) GetGiftingCampaignById(giftingCampaignId uuid.UUID) (*models.GiftingCampaign, error) {
-	var giftingCampaign models.GiftingCampaign
-	err := repo.DB.Preload("NftCollection").Preload("NftCollection.Nfts").First(&giftingCampaign).Error
+//*models.PrimarySaleCampaign
+func (repo *Repository) GetPrimarySaleCampaignByCollectionId(nftCollectionId uuid.UUID, data interface{}) error {
+	err := repo.DB.Where("nft_collection_id = ?", nftCollectionId).First(data).Error
 	if err != nil {
-		return nil, err
+		return err
 	}
-	fmt.Println("Got nft collection is", giftingCampaign.NftCollection)
-	return &giftingCampaign, nil
+	return nil
 }
 
-func (repo *Repository) UpdateGiftingCampaign(giftingCampaign *models.GiftingCampaign) error {
+//*models.GiftingCampaign
+func (repo *Repository) GetGiftingCampaignById(giftingCampaignId uuid.UUID, data interface{}) error {
+	err := repo.DB.Preload("NftCollection").Preload("NftCollection.Nfts").First(data).Error
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (repo *Repository) UpdateGiftingCampaign(giftingCampaign interface{}) error {
 	err := repo.DB.Omit("NftCollection", "Creator").Updates(giftingCampaign).Error
 	if err != nil {
 		return err
 	}
 	return nil
 }
+
 func SendGiftingNft(giftingCampaignId uuid.UUID, receiptId uint64, db *sql.DB) error {
 	sqlStatement := `
 		UPDATE nfts
