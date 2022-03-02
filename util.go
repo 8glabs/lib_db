@@ -5,21 +5,10 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/8glabs/lib_db/models"
 	_ "github.com/lib/pq"
 )
 
 //*models.User
-func (repo *Repository) CreateUserAndWallet(data interface{}) error {
-	// if user.ChainWallet == nil {
-	// 	return errors.New("invalid wallet")
-	// }
-	result := repo.DB.Create(data)
-	if result.Error != nil {
-		return result.Error
-	}
-	return nil
-}
 
 //*models.NftCollection
 func (repo *Repository) CreateMomentAndNfts(data interface{}) error {
@@ -45,10 +34,3 @@ func CheckEmailExist(emailAddress string, db *sql.DB) (uint64, bool) {
 }
 
 //*[]models.User
-func (repo *Repository) GetAllCreators(from int, to int, data interface{}) error {
-	err := repo.DB.Where("user_type = ?", models.UserType(models.USER_TYPE_CREATOR)).Offset(from).Limit(to).Find(data).Error
-	if err != nil {
-		return err
-	}
-	return nil
-}
