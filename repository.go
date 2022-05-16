@@ -5,6 +5,7 @@ import (
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/logger"
 )
 
 type Repository struct {
@@ -34,7 +35,9 @@ func NewRepo(conf *DBConfig) (*Repository, error) {
 	password := conf.Password
 	dbname := conf.DBName
 	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v sslmode=disable", host, user, password, dbname, port)
-	repoDb, err := gorm.Open(postgres.Open(dsn), &gorm.Config{})
+	repoDb, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
 	if err != nil {
 		return nil, err
 	}
