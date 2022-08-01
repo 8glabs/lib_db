@@ -164,7 +164,7 @@ func (p *OrmUtils) PageList() (map[string]interface{}, error) {
 	p.listTemplate["page"] = p.pageNum
 	p.listTemplate["pageSize"] = p.pageSize
 	p.listTemplate["pageCount"] = totalPage
-	// p.listTemplate["count"] = count
+	p.listTemplate["count"] = count
 	return p.listTemplate, nil
 }
 
