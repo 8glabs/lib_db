@@ -47,3 +47,19 @@ func NewRepo(conf *DBConfig) (*Repository, error) {
 	}
 	return &repo, nil
 }
+
+func NewDb(conf *DBConfig, db string) (*gorm.DB, error) {
+	host := conf.Host
+	port := conf.Port
+	user := conf.User
+	password := conf.Password
+	dbname := conf.DBName
+	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v sslmode=disable", host, user, password, dbname, port)
+	repoDb, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
+	if err != nil {
+		return nil, err
+	}
+	return repoDb, nil
+}
