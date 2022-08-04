@@ -63,3 +63,17 @@ func NewDb(conf *DBConfig, db string) (*gorm.DB, error) {
 	}
 	return repoDb, nil
 }
+
+func Close(db *gorm.DB) error {
+	sqlDB, err := db.DB()
+	if err != nil {
+		return err
+	}
+	// Close
+	err = sqlDB.Close()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
