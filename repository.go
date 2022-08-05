@@ -53,8 +53,7 @@ func NewDb(conf *DBConfig, db string) (*gorm.DB, error) {
 	port := conf.Port
 	user := conf.User
 	password := conf.Password
-	dbname := conf.DBName
-	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v sslmode=disable", host, user, password, dbname, port)
+	dsn := fmt.Sprintf("host=%v user=%v password=%v dbname=%v port=%v sslmode=disable", host, user, password, db, port)
 	repoDb, err := gorm.Open(postgres.Open(dsn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})
