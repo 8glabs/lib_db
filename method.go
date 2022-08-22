@@ -98,7 +98,7 @@ func (p *OrmUtils) Search(like string, fields ...string) *OrmUtils {
 	where := make([]string, fnum)
 	for i := 0; i < fnum; i++ {
 		l := fmt.Sprintf("%%%s%%", like)
-		where[i] = fmt.Sprintf("(%s LIKE '%s')", fields[i], l)
+		where[i] = fmt.Sprintf("(%s ilike '%s')", fields[i], l)
 	}
 	search := strings.Join(where, " OR ")
 	p.db = p.db.Where(search)
