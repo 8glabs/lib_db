@@ -3,6 +3,7 @@ package lib_db
 import (
 	"errors"
 	"fmt"
+	"gorm.io/gorm/clause"
 	"strings"
 
 	"gorm.io/gorm"
@@ -18,6 +19,8 @@ type OrmUtils struct {
 	mainTable    string
 	preloads     string
 	db           *gorm.DB
+
+	clausesOrderBy map[string]interface{}
 }
 
 func NewOrmUtils(db *gorm.DB, model interface{}) *OrmUtils {
@@ -51,6 +54,15 @@ func (p *OrmUtils) SetPageSize(size int) *OrmUtils {
 
 func (p *OrmUtils) SetOrder(order string) *OrmUtils {
 	p.order = order
+	return p
+}
+
+func (p *OrmUtils) SetClausesOrderBy(sql string, in []interface{}) *OrmUtils {
+	co := make(map[string]interface{})
+
+	co["sql"] = sql
+	co["in"] = in
+
 	return p
 }
 
@@ -119,6 +131,13 @@ func (p *OrmUtils) List() (map[string]interface{}, error) {
 	if p.order != "" {
 		p.db = p.db.Order(p.order)
 	}
+
+	if p.clausesOrderBy != nil {
+		p.db.Clauses(clause.OrderBy{
+			Expression: clause.Expr{SQL: p.clausesOrderBy["sql"].(string), Vars: []interface{}{p.clausesOrderBy["in"]}, WithoutParentheses: true},
+		})
+	}
+
 	p.db = p.db.Find(p.model)
 	if errors.Is(p.db.Error, gorm.ErrRecordNotFound) {
 		return nil, nil
@@ -152,6 +171,11 @@ func (p *OrmUtils) PageList() (map[string]interface{}, error) {
 	}
 	if p.order != "" {
 		p.db = p.db.Order(p.order)
+	}
+	if p.clausesOrderBy != nil {
+		p.db.Clauses(clause.OrderBy{
+			Expression: clause.Expr{SQL: p.clausesOrderBy["sql"].(string), Vars: []interface{}{p.clausesOrderBy["in"]}, WithoutParentheses: true},
+		})
 	}
 
 	p.db = p.db.Offset(p.pageNum * p.pageSize).Limit(p.pageSize).Find(p.model)
